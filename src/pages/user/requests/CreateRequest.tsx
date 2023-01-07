@@ -1,10 +1,10 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import * as yup from 'yup';
 import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { toFormData } from '../../../helpers/form-data.helper';
 import { Store } from 'react-notifications-component';
-import { ErrorNotification, SuccessNotification } from '../../../helpers/consts';
+import { ErrorNotification } from '../../../helpers/consts';
 import { useAddRequestMutation } from '../../../store/api/requests.api';
 import { Button, Form } from 'react-bootstrap';
 import FileUpload from '../../../components/common/FileUpload/FileUpload';
@@ -14,6 +14,7 @@ import BreadcrumbItem from '../../../components/common/Breadcrumbs/BreadcrumbIte
 import BreadcrumbGroup from '../../../components/common/Breadcrumbs/BreadcrumbGroup';
 import Row from 'react-bootstrap/Row';
 import { useAppSelector } from '../../../hooks/redux';
+import RequestCreatedInfoModal from '../../../components/requests/RequestCreatedInfoModal';
 
 const validationSchema = yup.object({
     title: yup.string().required('Необходимое поле'),
@@ -45,6 +46,13 @@ export default function CreateRequest() {
     const [addRequest, { isLoading, error }] = useAddRequestMutation();
     const { user } = useAppSelector(state => state.userReducer);
 
+    const [requestId, setRequestId] = useState<number | undefined>(undefined);
+
+    const [loginModalOpen, setLoginModalOpen] = React.useState(false);
+    const handleInfoModalOpen = (value: boolean) => () => {
+        setLoginModalOpen(value);
+    };
+
     const form = useForm<FormValues>({
         defaultValues: useMemo(() => {
             return {
@@ -63,8 +71,9 @@ export default function CreateRequest() {
         formData.set('deputat_id', data.deputat_id?.value);
         addRequest(formData)
             .unwrap()
-            .then(() => {
-                Store.addNotification({ ...SuccessNotification('Обращение успешно оставлено. Ожидайте ответа.') });
+            .then((response) => {
+                setRequestId(response.id);
+                handleInfoModalOpen(true)();
             })
             .catch((error) => {
                 Store.addNotification({ ...ErrorNotification(error?.data?.message || 'При создании обращения произошла ошибка') });
@@ -202,6 +211,7 @@ export default function CreateRequest() {
                     <Form.Group>
                         <Button disabled={ isLoading } type={ 'submit' } variant={ 'dark' }>Создать</Button>
                     </Form.Group>
+                    <RequestCreatedInfoModal open={loginModalOpen} handleClose={handleInfoModalOpen(false)} requestId={requestId}/>
                 </Form>
             </FormProvider>
         </Row>
