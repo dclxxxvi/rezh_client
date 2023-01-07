@@ -16,8 +16,8 @@ export const newsApi = commonApi.injectEndpoints({
             }),
             providesTags: ['News'],
         }),
-        getNewsItem: builder.query<INews, { id: number }>({
-            query: ({ id }) => `news/${ id }`,
+        getNewsItem: builder.query<INews, number>({
+            query: (id) => `news/${ id }`,
             providesTags: ['News'],
         }),
         addNews: builder.mutation<INews, FormData>({
