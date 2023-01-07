@@ -12,8 +12,6 @@ import DeputatRouter from './DeputatRouter';
 import UserRouter from './UserRouter';
 import CreateRequest from '../pages/user/requests/CreateRequest';
 import Frequency from '../pages/user/requests/Frequency';
-import Request from '../pages/user/requests/Request';
-import Requests from '../pages/user/requests/Requests';
 import { useGetMeQuery } from '../store/api/auth.api';
 import SearchRequest from '../pages/user/requests/SearchRequest';
 import Deputats from '../pages/Deputats';
@@ -59,14 +57,12 @@ export default function MainRouter() {
 
                 <Route path="/deputat" element={ <ProtectedRoute roles={ ['DEPUTAT', 'ADMIN'] } /> }>
                     <Route element={ <NavBar variant={ EVariant.DEPUTAT } /> }>
-                        <Route index element={ <div>Добро пожаловать в панель депутата</div> } />
                         { DeputatRouter }
                     </Route>
                 </Route>
 
                 <Route path="/admin" element={ <ProtectedRoute roles={ ['ADMIN'] } /> }>
                     <Route element={ <NavBar variant={ EVariant.ADMIN } /> }>
-                        <Route index element={ <div>Добро пожаловать в панель администратора</div> } />
                         { AdminRouter }
                     </Route>
                 </Route>

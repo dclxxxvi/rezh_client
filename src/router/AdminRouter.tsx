@@ -3,8 +3,10 @@ import AddNews from '../pages/admin/news/AddNews';
 import News from '../pages/admin/news/News';
 import Requests from '../pages/admin/requests/Requests';
 import Request from '../pages/admin/requests/Request';
+import Main from '../pages/admin/Main';
 
 export default [
+    <Route key="main" index element={ <Main /> } />,
     <Route path="news" key="news">
         <Route index element={<News />}/>
         <Route path="create" element={<AddNews />}/>
